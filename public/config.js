@@ -1,6 +1,6 @@
 const config = {
-    TELEGRAM_BOT_TOKEN: 'YOUR_TELEGRAM_BOT_TOKEN', // استبدل بمفتاح البوت من BotFather
-    CHAT_ID: 'YOUR_CHAT_ID', // استبدل بمعرف الدردشة
+    TELEGRAM_BOT_TOKEN: '8166679147:AAHFsH599FDs4kbWTcWdSrSDPRWHwK_ZRLM', // استبدل بمفتاح البوت من BotFather
+    CHAT_ID: '6466421046', // استبدل بمعرف الدردشة
     methodLimits: {
         "Muse wallet - USD": { min: 10, max: 5000 },
         "Orange Cash - EGP": { min: 100, max: 50000 },
