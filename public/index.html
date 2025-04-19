@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CryptoSwift - منصة تبادل العملات الرقمية السريعة والآمنة مع أفضل الأسعار في السوق.">
+    <meta name="keywords" content="CryptoSwift, تبادل العملات, عملات رقمية, بيتكوين, USDT, مصر, آمن">
+    <meta name="author" content="CryptoSwift Team">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="CryptoSwift - منصة تبادل العملات الرقمية">
+    <meta property="og:description" content="حوّل عملاتك الرقمية بسرعة وأمان مع CryptoSwift.">
+    <meta property="og:image" content="https://cryptoswift.com/assets/og-image.jpg">
+    <meta property="og:url" content="https://cryptoswift.com">
+    <title>CryptoSwift - منصة تبادل العملات الرقمية</title>
+    <link rel="icon" href="https://cryptoswift.com/favicon.ico" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8fafc;
+            color: #1e293b;
+            line-height: 1.5;
+            min-height: 100vh;
+            overscroll-behavior: none;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+        .navbar {
+            background: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            padding: 16px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.25rem;
+        }
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+        .navbar ul li a {
+            text-decoration: none;
+            color: #475569;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .navbar ul li a:hover, .navbar ul li a.active {
+            color: #1e40af;
+        }
+        .hero {
+            text-align: center;
+            padding: 120px 0 80px;
+            background: linear-gradient(180deg, #e0f2fe 0%, #ffffff 100%);
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 16px;
+        }
+        .hero p {
+            font-size: 1.125rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 32px;
+            padding: 0 16px;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+        .stat-card i {
+            font-size: 2rem;
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+        .exchange-box {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            max-width: 640px;
+            margin: 40px auto;
+            position: relative;
+        }
+        .exchange-box h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 24px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .exchange-box label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #1e293b;
+            margin-bottom: 8px;
+        }
+        .exchange-box select, .exchange-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+        .exchange-box select:focus, .exchange-box input:focus {
+            border-color: #1e40af;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+        .secure-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #22c55e;
+            font-size: 1rem;
+        }
+        .swap-icon {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #1e40af;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        .swap-icon:hover {
+            transform: rotate(180deg);
+        }
+        .exchange-box .result {
+            font-size: 1rem;
+            color: #475569;
+            margin: 12px 0;
+            text-align: center;
+        }
+        .exchange-box button {
+            background: #1e40af;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .exchange-box button:hover {
+            background: #1e3a8a;
+        }
+        .trust-seals {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .trust-seal {
+            width: 100px;
+            height: 100px;
+            background: #ffffff;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+            color: #1e293b;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: transform 0.2s;
+        }
+        .trust-seal:hover {
+            transform: scale(1.05);
+        }
+        .trust-seal i {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: #1e40af;
+        }
+        .prices-section, .faq-section, .contact-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 16px;
+        }
+        .section-subtitle {
+            font-size: 1.125rem;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto 32px;
+        }
+        .prices-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .prices-table th, .prices-table td {
+            padding: 16px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .prices-table th {
+            background: #1e40af;
+            color: #ffffff;
+            font-weight: 600;
+        }
+        .faq-item {
+            background: #ffffff;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .faq-item:hover {
+            transform: translateY(-4px);
+        }
+        .faq-item h3 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #1e40af;
+            padding: 16px;
+            cursor: pointer;
+            margin: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-item p {
+            padding: 16px;
+            display: none;
+            background: #f8fafc;
+            color: #475569;
+        }
+        .faq-item.active p {
+            display: block;
+        }
+        .contact-form {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 32px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+        .contact-form input, .contact-form textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+        }
+        .contact-form button {
+            background: #1e40af;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .contact-form button:hover {
+            background: #1e3a8a;
+        }
+        #map {
+            height: 320px;
+            border-radius: 12px;
+            margin-top: 32px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .error-message {
+            display: none;
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 8px;
+        }
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: #ef4444;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .toast.show {
+            opacity: 1;
+        }
+        .success-toast {
+            background: #22c55e;
+        }
+        .section-transition {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .section-transition.show {
+            opacity: 1;
+        }
+        .footer {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .footer a {
+            color: #93c5fd;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+        .footer a:hover {
+            color: #ffffff;
+        }
+        .company-info {
+            margin-top: 16px;
+            font-size: 0.875rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @media (max-width: 1024px) {
+            .navbar ul {
+                gap: 16px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .exchange-box, .contact-form {
+                padding: 24px;
+            }
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 0;
+            }
+            .navbar .container {
+                flex-direction: column;
+                gap: 12px;
+            }
+            .navbar ul {
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+                text-align: center;
+            }
+            .hero {
+                padding: 80px 0 40px;
+            }
+            .hero h1 {
+                font-size: 1.75rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            .exchange-box, .contact-form {
+                margin: 24px 16px;
+            }
+            .prices-section, .faq-section, .contact-section {
+                padding: 40px 0;
+            }
+            .trust-seals {
+                flex-direction: column;
+                align-items: center;
+            }
+            .trust-seal {
+                width: 80px;
+                height: 80px;
+                font-size: 0.7rem;
+            }
+            .trust-seal i {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- التنقل العلوي -->
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="45" fill="#1e40af"/>
+                    <path d="M65 35L50 50L65 65" stroke="white" stroke-width="8" stroke-linecap="round"/>
+                    <path d="M35 65L50 50L35 35" stroke="white" stroke-width="8" stroke-linecap="round"/>
+                    <circle cx="50" cy="50" r="10" fill="white"/>
+                </svg>
+                <span>CryptoSwift</span>
+            </div>
+            <ul class="flex items-center">
+                <li><a href="#home" class="nav-link active" data-i18n="home">الرئيسية</a></li>
+                <li><a href="#prices" class="nav-link" data-i18n="prices">الأسعار</a></li>
+                <li><a href="#faq" class="nav-link" data-i18n="faq">الأسئلة الشائعة</a></li>
+                <li><a href="#contact" class="nav-link" data-i18n="contact">الاتصال</a></li>
+                <li>
+                    <button id="languageToggle" class="text-sm text-[#475569] hover:text-[#1e40af] font-medium">العربية</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- الرئيسية -->
+    <section id="home" class="hero section-transition show">
+        <div class="container animate-fadeIn">
+            <h1 data-i18n="welcome">مرحبًا بك في CryptoSwift</h1>
+            <p data-i18n="heroMessage">حوّل عملاتك الرقمية بسرعة وأمان في خطوات بسيطة مع أفضل الأسعار في السوق.</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3>50,000+</h3>
+                    <p data-i18n="users">مستخدم</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h3>1,000,000+</h3>
+                    <p data-i18n="transactions">معاملة</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-globe"></i>
+                    <h3>100+</h3>
+                    <p data-i18n="countries">دولة</p>
+                </div>
+            </div>
+            <div class="trust-seals">
+                <a href="https://www.ssltrust.com" target="_blank" class="trust-seal" aria-label="SSL Secured">
+                    <i class="fas fa-lock"></i>
+                    <span>SSL Secured</span>
+                </a>
+                <a href="https://www.pcisecuritystandards.org" target="_blank" class="trust-seal" aria-label="PCI DSS Compliant">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>PCI DSS</span>
+                </a>
+                <a href="/privacy-policy" class="trust-seal" aria-label="Privacy Protected">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Privacy Protected</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم التبادل -->
+    <section id="exchangeSection" class="exchange-box section-transition show animate-fadeIn">
+        <h2 data-i18n="mainExchange">التبادل الرئيسي</h2>
+        <div class="form-group">
+            <label data-i18n="youSend">أنت ترسل</label>
+            <div class="flex items-center gap-3">
+                <div class="relative w-1/2">
+                    <input id="sendAmount" type="number" step="0.01" min="0" value="0.00" class="pl-10" placeholder="أدخل المبلغ" aria-label="المبلغ المرسل" />
+                    <i class="fas fa-lock secure-icon"></i>
+                </div>
+                <select id="sendMethodCurrency" class="w-1/2" aria-label="اختر طريقة الإرسال">
+                    <option value="Select Currency" data-i18n="selectCurrency">اختر العملة</option>
+                    <option value="Muse wallet - USD">💵 Muse wallet - USD</option>
+                    <option value="Orange Cash - EGP">📱 Orange Cash - EGP</option>
+                    <option value="Payeer - USD">💵 Payeer - USD</option>
+                    <option value="Payeer - RUB">🇷🇺 Payeer - RUB</option>
+                    <option value="Vodafone Cash - EGP">📱 Vodafone Cash - EGP</option>
+                    <option value="Binance pay - USDT">💰 Binance pay - USDT</option>
+                    <option value="BYBIT - USDT">💰 BYBIT - USDT</option>
+                    <option value="Cash Wallet - EGP">📱 Cash Wallet - EGP</option>
+                    <option value="Etisalat Cash - EGP">📱 Etisalat Cash - EGP</option>
+                    <option value="Telegram - USD">📱 Telegram - USD</option>
+                    <option value="Telegram - EGP">📱 Telegram - EGP</option>
+                    <option value="Telegram - USDT">📱 Telegram - USDT</option>
+                    <option value="Telegram - RUB">🇷🇺 Telegram - RUB</option>
+                </select>
+            </div>
+            <p id="sendAmountError" class="error-message" data-i18n="amountError">يرجى إدخال مبلغ صالح ضمن النطاق المحدد.</p>
+            <div class="flex justify-between mt-3 text-sm text-[#475569]">
+                <span data-i18n="min">الحد الأدنى: <span id="sendMin">0.00</span></span>
+                <span data-i18n="max">الحد الأقصى: <span id="sendMax">0.00</span></span>
+            </div>
+        </div>
+        <div class="swap-icon"><i class="fas fa-exchange-alt"></i></div>
+        <div class="form-group">
+            <label data-i18n="youGet">أنت تستلم</label>
+            <div class="flex items-center gap-3">
+                <div class="relative w-1/2">
+                    <input id="getAmount" type="number" value="0.00" class="pl-10" readonly aria-label="المبلغ المستلم" />
+                    <i class="fas fa-lock secure-icon"></i>
+                </div>
+                <select id="getMethodCurrency" class="w-1/2" aria-label="اختر طريقة الاستلام">
+                    <option value="Select Currency" data-i18n="selectCurrency">اختر العملة</option>
+                    <option value="Muse wallet - USD">💵 Muse wallet - USD</option>
+                    <option value="Orange Cash - EGP">📱 Orange Cash - EGP</option>
+                    <option value="Payeer - USD">💵 Payeer - USD</option>
+                    <option value="Payeer - RUB">🇷🇺 Payeer - RUB</option>
+                    <option value="Vodafone Cash - EGP">📱 Vodafone Cash - EGP</option>
+                    <option value="Binance pay - USDT">💰 Binance pay - USDT</option>
+                    <option value="BYBIT - USDT">💰 BYBIT - USDT</option>
+                    <option value="Cash Wallet - EGP">📱 Cash Wallet - EGP</option>
+                    <option value="Etisalat Cash - EGP">📱 Etisalat Cash - EGP</option>
+                    <option value="Telegram - USD">📱 Telegram - USD</option>
+                    <option value="Telegram - EGP">📱 Telegram - EGP</option>
+                    <option value="Telegram - USDT">📱 Telegram - USDT</option>
+                    <option value="Telegram - RUB">🇷🇺 Telegram - RUB</option>
+                </select>
+            </div>
+            <div class="flex justify-between mt-3 text-sm text-[#475569]">
+                <span data-i18n="min">الحد الأدنى: <span id="getMin">0.00</span></span>
+                <span data-i18n="max">الحد الأقصى: <span id="getMax">0.00</span></span>
+            </div>
+            <div class="mt-3 text-sm text-[#475569]">
+                <p data-i18n="transactionFees">رسوم المعاملة (0.5%): <span id="transactionFees">0.00</span></p>
+                <p data-i18n="finalAmount">المبلغ النهائي: <span id="finalAmount">0.00</span></p>
+            </div>
+        </div>
+        <div class="form-group">
+            <button id="exchangeRateBtn" data-i18n="exchangeRateBtn">سعر الصرف</button>
+            <p id="exchangeRate" class="result" data-i18n="selectCurrencies">اختر العملات لرؤية السعر</p>
+        </div>
+        <div class="flex gap-4">
+            <button id="saveFavorite" class="flex items-center justify-center gap-2 bg-gray-100 text-[#1e40af] hover:bg-gray-200"><i class="fas fa-star"></i> <span data-i18n="saveFavorite">حفظ كمفضل</span></button>
+            <button id="exchangeNow" class="flex items-center justify-center gap-2"><i class="fas fa-rocket"></i> <span data-i18n="exchangeNow">تبادل الآن</span></button>
+        </div>
+        <div class="trust-seals">
+            <a href="https://www.ssltrust.com" target="_blank" class="trust-seal" aria-label="SSL Secured">
+                <i class="fas fa-lock"></i>
+                <span>SSL Secured</span>
+            </a>
+            <a href="https://www.pcisecuritystandards.org" target="_blank" class="trust-seal" aria-label="PCI DSS Compliant">
+                <i class="fas fa-shield-alt"></i>
+                <span>PCI DSS</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- قسم الأسعار -->
+    <section id="prices" class="prices-section section-transition hidden">
+        <div class="container animate-fadeIn">
+            <h2 class="section-title" data-i18n="prices">أسعار العملات</h2>
+            <p class="section-subtitle" data-i18n="pricesMessage">اطلع على أحدث أسعار العملات الرقمية والتقليدية، يتم تحديثها في الوقت الفعلي.</p>
+            <table class="prices-table">
+                <thead>
+                    <tr>
+                        <th data-i18n="currency">العملة</th>
+                        <th data-i18n="priceUSD">السعر (USD)</th>
+                        <th data-i18n="priceEGP">السعر (EGP)</th>
+                        <th data-i18n="priceRUB">السعر (RUB)</th>
+                    </tr>
+                </thead>
+                <tbody id="pricesTableBody"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- قسم الأسئلة الشائعة -->
+    <section id="faq" class="faq-section section-transition hidden">
+        <div class="container animate-fadeIn">
+            <h2 class="section-title" data-i18n="faq">الأسئلة الشائعة</h2>
+            <p class="section-subtitle" data-i18n="faqMessage">إجابات على الأسئلة الأكثر شيوعًا حول خدماتنا.</p>
+            <div class="faq-item">
+                <h3 data-i18n="faq1Question">كم يستغرق التبادل؟ <i class="fas fa-chevron-down"></i></h3>
+                <p data-i18n="faq1Answer">عادةً ما تستغرق عمليات التبادل من 1 إلى 20 دقيقة، حسب طريقة الدفع وسرعة تأكيد المعاملة.</p>
+            </div>
+            <div class="faq-item">
+                <h3 data-i18n="faq2Question">هل المنصة آمنة؟ <i class="fas fa-chevron-down"></i></h3>
+                <p data-i18n="faq2Answer">نعم، نستخدم أحدث تقنيات التشفير (SSL/TLS) ونتبع معايير PCI DSS لحماية بياناتك ومعاملاتك.</p>
+            </div>
+            <div class="faq-item">
+                <h3 data-i18n="faq3Question">ما هي الرسوم؟ <i class="fas fa-chevron-down"></i></h3>
+                <p data-i18n="faq3Answer">نفرض رسومًا ثابتة بنسبة 0.5% على جميع المعاملات، مع شفافية كاملة في العرض.</p>
+            </div>
+            <div class="faq-item">
+                <h3 data-i18n="faq4Question">كيف أتتبع معاملتي؟ <i class="fas fa-chevron-down"></i></h3>
+                <p data-i18n="faq4Answer">يمكنك استخدام معرف التبادل في قسم "تتبع تبادلك" لمعرفة حالة معاملتك في الوقت الفعلي.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم الاتصال -->
+    <section id="contact" class="contact-section section-transition hidden">
+        <div class="container animate-fadeIn">
+            <h2 class="section-title" data-i18n="contact">اتصل بنا</h2>
+            <p class="section-subtitle" data-i18n="contactMessage">تواصل معنا لأي استفسار أو دعم، فريقنا جاهز لمساعدتك!</p>
+            <div class="contact-form">
+                <input id="contactName" type="text" data-i18n-placeholder="namePlaceholder" placeholder="الاسم" aria-label="الاسم" />
+                <input id="contactEmail" type="email" data-i18n-placeholder="emailPlaceholder" placeholder="البريد الإلكتروني" aria-label="البريد الإلكتروني" />
+                <textarea id="contactMessage" rows="5" data-i18n-placeholder="messagePlaceholder" placeholder="رسالتك" aria-label="رسالتك"></textarea>
+                <button id="submitContact" data-i18n="sendMessage">إرسال الرسالة</button>
+            </div>
+            <div class="mt-8 text-center text-[#475569]">
+                <p><i class="fas fa-envelope mr-2"></i> <a href="mailto:support@cryptoswift.com">support@cryptoswift.com</a></p>
+                <p><i class="fas fa-phone mr-2"></i> +20 123 456 7890</p>
+                <p><i class="fab fa-telegram mr-2"></i> <a href="https://t.me/+201234567890" target="_blank">تيليجرام</a></p>
+                <p><i class="fas fa-building mr-2"></i> CryptoSwift LLC, القاهرة، مصر</p>
+                <p><i class="fas fa-id-card mr-2"></i> رقم التسجيل: EG-123456789</p>
+            </div>
+            <div class="trust-seals mt-6">
+                <a href="/support" class="trust-seal" aria-label="24/7 Support">
+                    <i class="fas fa-headset"></i>
+                    <span>دعم 24/7</span>
+                </a>
+            </div>
+            <div id="map"></div>
+        </div>
+    </section>
+
+    <!-- قسم الدفع -->
+    <section id="paymentSection" class="exchange-box section-transition hidden animate-fadeIn">
+        <h2 data-i18n="completePayment">أكمل دفعك</h2>
+        <div class="form-group">
+            <h3 data-i18n="pleaseSend">يرجى الإرسال:</h3>
+            <p id="paymentSendAmount" class="text-[#1e40af] font-semibold"></p>
+            <p id="paymentSendMethod" class="text-[#475569]"></p>
+            <p data-i18n="toAccount">إلى الحساب التالي:</p>
+            <p id="paymentAccountNumber" class="bg-gray-50 p-3 rounded-lg font-mono text-sm"></p>
+        </div>
+        <div class="form-group">
+            <label data-i18n="receiveAccountLabel">حسابك لاستلام الأموال:</label>
+            <div class="relative">
+                <input id="receiveAccount" type="text" placeholder="أدخل رقم الحساب أو البريد الإلكتروني أو عنوان المحفظة" aria-label="حساب الاستلام" class="pl-10" />
+                <i class="fas fa-lock secure-icon"></i>
+            </div>
+            <p id="receiveAccountError" class="error-message" data-i18n="receiveAccountError">يرجى إدخال رقم حساب صالح أو عنوان محفظة.</p>
+            <p id="receiveMethod" class="text-[#475569] mt-2"></p>
+        </div>
+        <div class="form-group">
+            <label data-i18n="uploadScreenshot">رفع لقطة شاشة للدفع:</label>
+            <input id="paymentScreenshot" type="file" accept="image/*" aria-label="لقطة شاشة الدفع" />
+            <p id="paymentScreenshotError" class="error-message" data-i18n="uploadScreenshotError">يرجى رفع لقطة شاشة لدفعك.</p>
+        </div>
+        <div class="form-group">
+            <p class="text-center text-sm text-[#475569]" data-i18n="reviewMessage">سيتم مراجعة معاملتك خلال 1 إلى 20 دقيقة. عادةً، يستغرق الأمر حوالي 10 دقائق.</p>
+            <p class="text-center text-sm text-[#22c55e]"><i class="fas fa-shield-alt mr-1"></i>معاملتك محمية بتشفير SSL</p>
+        </div>
+        <button id="submitPayment" data-i18n="submitPayment">إرسال الدفع</button>
+        <div class="trust-seals">
+            <a href="https://www.ssltrust.com" target="_blank" class="trust-seal" aria-label="SSL Secured">
+                <i class="fas fa-lock"></i>
+                <span>SSL Secured</span>
+            </a>
+            <a href="https://www.pcisecuritystandards.org" target="_blank" class="trust-seal" aria-label="PCI DSS Compliant">
+                <i class="fas fa-shield-alt"></i>
+                <span>PCI DSS</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- قسم النجاح -->
+    <section id="successSection" class="exchange-box section-transition hidden animate-fadeIn">
+        <div class="text-center">
+            <div class="text-green-500 text-5xl mb-6"><i class="fas fa-check-circle"></i></div>
+            <h3 class="text-2xl font-semibold" data-i18n="successful">نجاح</h3>
+            <p class="text-sm text-[#475569] mt-2" data-i18n="successMessage">سيتم مراجعة وتأكيد دفعك قريبًا.</p>
+        </div>
+    </section>
+
+    <!-- قسم الخطأ -->
+    <section id="errorSection" class="exchange-box section-transition hidden animate-fadeIn">
+        <div class="text-center">
+            <div class="text-red-500 text-5xl mb-6"><i class="fas fa-times-circle"></i></div>
+            <h3 class="text-2xl font-semibold" data-i18n="errorTitle">حدث خطأ</h3>
+            <p class="text-sm text-[#475569] mt-2" data-i18n="errorMessage">حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا.</p>
+            <button id="backToExchange" class="mt-6 bg-gray-100 text-[#1e40af] hover:bg-gray-200" data-i18n="backToExchange">العودة إلى التبادل</button>
+        </div>
+    </section>
+
+    <!-- التذييل -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 CryptoSwift. جميع الحقوق محفوظة.</p>
+            <p class="mt-2">
+                <a href="/terms" data-i18n="terms">الشروط والأحكام</a> |
+                <a href="/privacy-policy" data-i18n="privacy">سياسة الخصوصية</a> |
+                <a href="#contact" data-i18n="contact">الاتصال بنا</a>
+            </p>
+            <div class="company-info">
+                <p>CryptoSwift LLC, القاهرة، مصر | رقم التسجيل: EG-123456789</p>
+                <p>محمي بواسطة <a href="https://www.ssltrust.com" target="_blank">SSL</a> و <a href="https://www.pcisecuritystandards.org" target="_blank">PCI DSS</a></p>
+            </div>
+            <div class="trust-seals mt-6">
+                <a href="https://www.ssltrust.com" target="_blank" class="trust-seal" aria-label="SSL Secured">
+                    <i class="fas fa-lock"></i>
+                    <span>SSL Secured</span>
+                </a>
+                <a href="https://www.pcisecuritystandards.org" target="_blank" class="trust-seal" aria-label="PCI DSS Compliant">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>PCI DSS</span>
+                </a>
+                <a href="/support" class="trust-seal" aria-label="24/7 Support">
+                    <i class="fas fa-headset"></i>
+                    <span>دعم 24/7</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // كائن الترجمة
+        const translations = {
+            en: {
+                home: 'Home',
+                prices: 'Prices',
+                faq: 'FAQ',
+                contact: 'Contact',
+                welcome: 'Welcome to CryptoSwift',
+                heroMessage: 'Convert your digital currencies quickly and securely in simple steps with the best market rates.',
+                users: 'Users',
+                transactions: 'Transactions',
+                countries: 'Countries',
+                mainExchange: 'Main Exchange',
+                youSend: 'You Send',
+                youGet: 'You Get',
+                selectCurrency: 'Select Currency',
+                min: 'Min:',
+                max: 'Max:',
+                transactionFees: 'Transaction Fees (0.5%):',
+                finalAmount: 'Final Amount:',
+                exchangeRateBtn: 'Exchange Rate',
+                selectCurrencies: 'Select currencies to see the rate',
+                saveFavorite: 'Save as Favorite',
+                exchangeNow: 'Exchange Now',
+                completePayment: 'Complete Your Payment',
+                pleaseSend: 'Please Send:',
+                toAccount: 'To the following account:',
+                receiveAccountLabel: 'Your Account to Receive Funds:',
+                receiveAccountError: 'Please enter a valid account number or wallet address.',
+                uploadScreenshot: 'Upload Payment Screenshot:',
+                uploadScreenshotError: 'Please upload a screenshot of your payment.',
+                reviewMessage: 'Your transaction will be reviewed within 1 to 20 minutes. Typically, it takes around 10 minutes.',
+                submitPayment: 'Submit Payment',
+                successful: 'Successful',
+                successMessage: 'Your payment will be reviewed and confirmed soon.',
+                errorTitle: 'An Error Occurred',
+                errorMessage: 'Something went wrong. Please try again later.',
+                backToExchange: 'Back to Exchange',
+                pricesMessage: 'View the latest prices for digital and traditional currencies, updated in real-time.',
+                currency: 'Currency',
+                priceUSD: 'Price (USD)',
+                priceEGP: 'Price (EGP)',
+                priceRUB: 'Price (RUB)',
+                faqMessage: 'Answers to the most common questions about our services.',
+                faq1Question: 'How long does an exchange take?',
+                faq1Answer: 'Exchanges typically take 1 to 20 minutes, depending on the payment method and transaction confirmation speed.',
+                faq2Question: 'Is the platform secure?',
+                faq2Answer: 'Yes, we use the latest SSL/TLS encryption and comply with PCI DSS standards to protect your data and transactions.',
+                faq3Question: 'What are the fees?',
+                faq3Answer: 'We charge a flat 0.5% fee on all transactions, with full transparency in the display.',
+                faq4Question: 'How do I track my transaction?',
+                faq4Answer: 'You can use your exchange ID in the "Track Your Exchange" section to check the status in real-time.',
+                contactMessage: 'Contact us for any inquiries or support, our team is ready to assist you!',
+                namePlaceholder: 'Name',
+                emailPlaceholder: 'Email',
+                messagePlaceholder: 'Your Message',
+                sendMessage: 'Send Message',
+                terms: 'Terms & Conditions',
+                privacy: 'Privacy Policy',
+                amountError: 'Please enter a valid amount within the specified range.',
+                selectCurrencyError: 'Please select valid payment methods for both sending and receiving.',
+                invalidEmailError: 'Please enter a valid email address.',
+                contactSuccess: 'Thank you for your message! We will get back to you soon.',
+                apiError: 'Failed to fetch exchange rates. Using default rates.',
+                telegramNotificationError: 'Failed to send Telegram notification.'
+            },
+            ar: {
+                home: 'الرئيسية',
+                prices: 'الأسعار',
+                faq: 'الأسئلة الشائعة',
+                contact: 'الاتصال',
+                welcome: 'مرحبًا بك في CryptoSwift',
+                heroMessage: 'حوّل عملاتك الرقمية بسرعة وأمان في خطوات بسيطة مع أفضل الأسعار في السوق.',
+                users: 'مستخدم',
+                transactions: 'معاملة',
+                countries: 'دولة',
+                mainExchange: 'التبادل الرئيسي',
+                youSend: 'أنت ترسل',
+                youGet: 'أنت تستلم',
+                selectCurrency: 'اختر العملة',
+                min: 'الحد الأدنى:',
+                max: 'الحد الأقصى:',
+                transactionFees: 'رسوم المعاملة (0.5%):',
+                finalAmount: 'المبلغ النهائي:',
+                exchangeRateBtn: 'سعر الصرف',
+                selectCurrencies: 'اختر العملات لرؤية السعر',
+                saveFavorite: 'حفظ كمفضل',
+                exchangeNow: 'تبادل الآن',
+                completePayment: 'أكمل دفعك',
+                pleaseSend: 'يرجى الإرسال:',
+                toAccount: 'إلى الحساب التالي:',
+                receiveAccountLabel: 'حسابك لاستلام الأموال:',
+                receiveAccountError: 'يرجى إدخال رقم حساب صالح أو عنوان محفظة.',
+                uploadScreenshot: 'رفع لقطة شاشة للدفع:',
+                uploadScreenshotError: 'يرجى رفع لقطة شاشة لدفعك.',
+                reviewMessage: 'سيتم مراجعة معاملتك خلال 1 إلى 20 دقيقة. عادةً، يستغرق الأمر حوالي 10 دقائق.',
+                submitPayment: 'إرسال الدفع',
+                successful: 'نجاح',
+                successMessage: 'سيتم مراجعة وتأكيد دفعك قريبًا.',
+                errorTitle: 'حدث خطأ',
+                errorMessage: 'حدث خطأ ما. يرجى المحاولة مرة أخرى لاحقًا.',
+                backToExchange: 'العودة إلى التبادل',
+                pricesMessage: 'اطلع على أحدث أسعار العملات الرقمية والتقليدية، يتم تحديثها في الوقت الفعلي.',
+                currency: 'العملة',
+                priceUSD: 'السعر (USD)',
+                priceEGP: 'السعر (EGP)',
+                priceRUB: 'السعر (RUB)',
+                faqMessage: 'إجابات على الأسئلة الأكثر شيوعًا حول خدماتنا.',
+                faq1Question: 'كم يستغرق التبادل؟',
+                faq1Answer: 'عادةً ما تستغرق عمليات التبادل من 1 إلى 20 دقيقة، حسب طريقة الدفع وسرعة تأكيد المعاملة.',
+                faq2Question: 'هل المنصة آمنة؟',
+                faq2Answer: 'نعم، نستخدم تقنيات التشفير SSL/TLS ونلتزم بمعايير PCI DSS لحماية بياناتك ومعاملاتك.',
+                faq3Question: 'ما هي الرسوم؟',
+                faq3Answer: 'نفرض رسومًا ثابتة بنسبة 0.5% على جميع المعاملات، مع شفافية كاملة في العرض.',
+                faq4Question: 'كيف أتتبع معاملتي؟',
+                faq4Answer: 'يمكنك استخدام معرف التبادل في قسم "تتبع تبادلك" لمعرفة حالة معاملتك في الوقت الفعلي.',
+                contactMessage: 'تواصل معنا لأي استفسار أو دعم، فريقنا جاهز لمساعد Heterosexualك!',
+                namePlaceholder: 'الاسم',
+                emailPlaceholder: 'البريد الإلكتروني',
+                messagePlaceholder: 'رسالتك',
+                sendMessage: 'إرسال الرسالة',
+                terms: 'الشروط والأحكام',
+                privacy: 'سياسة الخصوصية',
+                amountError: 'يرجى إدخال مبلغ صالح ضمن النطاق المحدد.',
+                selectCurrencyError: 'يرجى اختيار طرق دفع صالحة للإرسال والاستلام.',
+                invalidEmailError: 'يرجى إدخال بريد إلكتروني صالح.',
+                contactSuccess: 'شكرًا على رسالتك! سنتواصل معك قريبًا.',
+                apiError: 'فشل في جلب أسعار الصرف. يتم استخدام الأسعار الافتراضية.',
+                telegramNotificationError: 'فشل في إرسال إشعار تيليجرام.'
+            }
+        };
+
+        // إعداد التكوين
+        const config = {
+            methodLimits: {
+                "Muse wallet - USD": { min: 10, max: 5000 },
+                "Orange Cash - EGP": { min: 100, max: 50000 },
+                "Payeer - USD": { min: 5, max: 10000 },
+                "Payeer - RUB": { min: 500, max: 500000 },
+                "Vodafone Cash - EGP": { min: 100, max: 50000 },
+                "Binance pay - USDT": { min: 10, max: 10000 },
+                "BYBIT - USDT": { min: 10, max: 10000 },
+                "Cash Wallet - EGP": { min: 100, max: 50000 },
+                "Etisalat Cash - EGP": { min: 100, max: 50000 },
+                "Telegram - USD": { min: 10, max: 5000 },
+                "Telegram - EGP": { min: 100, max: 50000 },
+                "Telegram - USDT": { min: 10, max: 10000 },
+                "Telegram - RUB": { min: 500, max: 500000 }
+            },
+            dummyAccounts: {
+                "Muse wallet - USD": "muse123456789",
+                "Orange Cash - EGP": "0123456789",
+                "Payeer - USD": "P123456789",
+                "Payeer - RUB": "P987654321",
+                "Vodafone Cash - EGP": "0129876543",
+                "Binance pay - USDT": "binance123456",
+                "BYBIT - USDT": "bybit987654",
+                "Cash Wallet - EGP": "cashwallet123",
+                "Etisalat Cash - EGP": "etisalat456789",
+                "Telegram - USD": "@CryptoSwiftUSD",
+                "Telegram - EGP": "@CryptoSwiftEGP",
+                "Telegram - USDT": "@CryptoSwiftUSDT",
+                "Telegram - RUB": "@CryptoSwiftRUB"
+            },
+            TELEGRAM_BOT_TOKEN: "YOUR_TELEGRAM_BOT_TOKEN",
+            CHAT_ID: "YOUR_CHAT_ID"
+        };
+
+        // تبديل اللغة
+        let currentLang = 'ar';
+        const languageToggle = document.getElementById('languageToggle');
+        languageToggle.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            languageToggle.textContent = currentLang === 'en' ? 'English' : 'العربية';
+            document.documentElement.setAttribute('dir', currentLang === 'en' ? 'ltr' : 'rtl');
+            updateLanguage();
+        });
+
+        // تحديث النصوص بناءً على اللغة
+        function updateLanguage() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                element.innerHTML = translations[currentLang][key] || element.innerHTML;
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-i18n-placeholder');
+                element.setAttribute('placeholder', translations[currentLang][key] || element.getAttribute('placeholder'));
+            });
+        }
+
+        // إعداد CoinGecko API
+        const COINGECKO_API_KEY = 'CG-EwhnQDVsGdhuNBo6mZFsouTA';
+        const COINGECKO_API_URL = 'https://api.coingecko.com/api/v3/simple/price';
+        const currencyToCoinGeckoId = {
+            USD: 'usd',
+            EGP: 'egp',
+            USDT: 'tether',
+            RUB: 'rub'
+        };
+
+        // أسعار الصرف
+        let exchangeRates = {
+            USD: { EGP: 0, USDT: 0, RUB: 0, USD: 1.00 },
+            EGP: { USD: 0, USDT: 0, RUB: 0, EGP: 1.00 },
+            USDT: { USD: 0, EGP: 0, RUB: 0, USDT: 1.00 },
+            RUB: { USD: 0, EGP: 0, USDT: 0, RUB: 1.00 }
+        };
+
+        // أسعار افتراضية
+        const defaultExchangeRates = {
+            USD: { EGP: 48.50, USDT: 1.00, RUB: 94.50, USD: 1.00 },
+            EGP: { USD: 0.0206, USDT: 0.0206, RUB: 1.95, EGP: 1.00 },
+            USDT: { USD: 1.00, EGP: 48.50, RUB: 94.50, USDT: 1.00 },
+            RUB: { USD: 0.0106, EGP: 0.51, USDT: 0.0106, RUB: 1.00 }
+        };
+
+        // جلب أسعار الصرف
+        async function fetchExchangeRates() {
+            try {
+                const ids = 'tether';
+                const vsCurrencies = 'usd,egp,rub';
+                const response = await fetch(`${COINGECKO_API_URL}?ids=${ids}&vs_currencies=${vsCurrencies}&x_cg_api_key=${COINGECKO_API_KEY}`);
+                if (!response.ok) throw new Error('Failed to fetch exchange rates');
+                const data = await response.json();
+                const tether = data['tether'];
+
+                const usdtToUsd = tether.usd || 1;
+                const usdtToEgp = tether.egp || 48.50;
+                const usdtToRub = tether.rub || 94.50;
+
+                exchangeRates.USD.USDT = 1 / usdtToUsd;
+                exchangeRates.USD.EGP = usdtToEgp / usdtToUsd;
+                exchangeRates.USD.RUB = usdtToRub / usdtToUsd;
+                exchangeRates.USD.USD = 1;
+
+                exchangeRates.EGP.USD = 1 / exchangeRates.USD.EGP;
+                exchangeRates.EGP.USDT = usdtToEgp / usdtToUsd;
+                exchangeRates.EGP.RUB = usdtToRub / usdtToEgp;
+                exchangeRates.EGP.EGP = 1;
+
+                exchangeRates.USDT.USD = usdtToUsd;
+                exchangeRates.USDT.EGP = usdtToEgp;
+                exchangeRates.USDT.RUB = usdtToRub;
+                exchangeRates.USDT.USDT = 1;
+
+                exchangeRates.RUB.USD = 1 / exchangeRates.USD.RUB;
+                exchangeRates.RUB.EGP = 1 / exchangeRates.EGP.RUB;
+                exchangeRates.RUB.USDT = 1 / usdtToRub;
+                exchangeRates.RUB.RUB = 1;
+
+                updateExchange();
+                updatePricesTable();
+            } catch (error) {
+                console.error('Error fetching exchange rates:', error);
+                showToast('apiError');
+                exchangeRates = { ...defaultExchangeRates };
+                updateExchange();
+                updatePricesTable();
+            }
+        }
+
+        // جلب الأسعار عند التحميل وكل 3 دقائق
+        fetchExchangeRates();
+        setInterval(fetchExchangeRates, 3 * 60 * 1000);
+
+        // تحديث جدول الأسعار
+        function updatePricesTable() {
+            const tableBody = document.getElementById('pricesTableBody');
+            tableBody.innerHTML = '';
+            const currencies = ['USD', 'EGP', 'USDT', 'RUB'];
+            currencies.forEach(currency => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${currency}</td>
+                    <td>${formatNumber(exchangeRates[currency].USD.toFixed(2))}</td>
+                    <td>${formatNumber(exchangeRates[currency].EGP.toFixed(2))}</td>
+                    <td>${formatNumber(exchangeRates[currency].RUB.toFixed(2))}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // ربط طرق الدفع بالعملات
+        const methodCurrencies = {
+            "Muse wallet - USD": "USD",
+            "Orange Cash - EGP": "EGP",
+            "Payeer - USD": "USD",
+            "Payeer - RUB": "RUB",
+            "Vodafone Cash - EGP": "EGP",
+            "Binance pay - USDT": "USDT",
+            "BYBIT - USDT": "USDT",
+            "Cash Wallet - EGP": "EGP",
+            "Etisalat Cash - EGP": "EGP",
+            "Telegram - USD": "USD",
+            "Telegram - EGP": "EGP",
+            "Telegram - USDT": "USDT",
+            "Telegram - RUB": "RUB"
+        };
+
+        // العناصر في واجهة المستخدم
+        const sendAmountInput = document.getElementById('sendAmount');
+        const sendMethodCurrencySelect = document.getElementById('sendMethodCurrency');
+        const getAmountInput = document.getElementById('getAmount');
+        const getMethodCurrencySelect = document.getElementById('getMethodCurrency');
+        const sendMin = document.getElementById('sendMin');
+        const sendMax = document.getElementById('sendMax');
+        const getMin = document.getElementById('getMin');
+        const getMax = document.getElementById('getMax');
+        const transactionFees = document.getElementById('transactionFees');
+        const finalAmount = document.getElementById('finalAmount');
+        const exchangeRateBtn = document.getElementById('exchangeRateBtn');
+        const exchangeRateText = document.getElementById('exchangeRate');
+        const saveFavoriteBtn = document.getElementById('saveFavorite');
+        const exchangeNowBtn = document.getElementByInsecureAccountLabeld('exchangeNow');
+        const exchangeSection = document.getElementById('exchangeSection');
+        const paymentSection = document.getElementById('paymentSection');
+        const successSection = document.getElementById('successSection');
+        const errorSection = document.getElementById('errorSection');
+        const paymentSendAmount = document.getElementById('paymentSendAmount');
+        const paymentSendMethod = document.getElementById('paymentSendMethod');
+        const paymentAccountNumber = document.getElementById('paymentAccountNumber');
+        const receiveMethod = document.getElementById('receiveMethod');
+        const receiveAccountInput = document.getElementById('receiveAccount');
+        const paymentScreenshotInput = document.getElementById('paymentScreenshot');
+        const receiveAccountError = document.getElementById('receiveAccountError');
+        const paymentScreenshotError = document.getElementById('paymentScreenshotError');
+        const submitPaymentBtn = document.getElementById('submitPayment');
+        const backToExchangeBtn = document.getElementById('backToExchange');
+        const sendAmountError = document.getElementById('sendAmountError');
+        const contactName = document.getElementById('contactName');
+        const contactEmail = document.getElementById('contactEmail');
+        const contactMessage = document.getElementById('contactMessage');
+        const submitContact = document.getElementById('submitContact');
+        const swapIcon = document.querySelector('.swap-icon');
+
+        // تنسيق الأرقام
+        function formatNumber(number) {
+            return new Intl.NumberFormat(currentLang === 'en' ? 'en-US' : 'ar-EG').format(number);
+        }
+
+        // عرض إشعار
+        function showToast(messageKey, isSuccess = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isSuccess ? 'success-toast' : ''}`;
+            toast.textContent = translations[currentLang][messageKey] || messageKey;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                toast.remove();
+            }, 3000);
+        }
+
+        // إظهار قسم
+        function showSection(sectionToShow) {
+            [exchangeSection, paymentSection, successSection, errorSection, document.getElementById('home'), document.getElementById('prices'), document.getElementById('faq'), document.getElementById('contact')].forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('show');
+            });
+            sectionToShow.classList.remove('hidden');
+            setTimeout(() => sectionToShow.classList.add('show'), 50);
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            document.querySelector(`.nav-link[href="#${sectionToShow.id}"]`)?.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // تحميل التفضيلات
+        function loadPreferences() {
+            const savedSendMethod = localStorage.getItem('savedSendMethod');
+            const savedGetMethod = localStorage.getItem('savedGetMethod');
+            if (savedSendMethod) sendMethodCurrencySelect.value = savedSendMethod;
+            if (savedGetMethod) getMethodCurrencySelect.value = savedGetMethod;
+            updateExchange();
+        }
+
+        // الحصول على العملة
+        function getCurrencyFromMethod(methodCurrency) {
+            return methodCurrencies[methodCurrency] || "";
+        }
+
+        // تحديث حدود الدفع
+        function updateLimits() {
+            const sendMethod = sendMethodCurrencySelect.value;
+            const getMethod = getMethodCurrencySelect.value;
+            if (sendMethod !== "Select Currency" && config.methodLimits[sendMethod]) {
+                sendMin.textContent = formatNumber(config.methodLimits[sendMethod].min);
+                sendMax.textContent = formatNumber(config.methodLimits[sendMethod].max);
+                sendAmountInput.min = config.methodLimits[sendMethod].min;
+            } else {
+                sendMin.textContent = "0.00";
+                sendMax.textContent = "0.00";
+                sendAmountInput.min = 0;
+            }
+            if (getMethod !== "Select Currency" && config.methodLimits[getMethod]) {
+                getMin.textContent = formatNumber(config.methodLimits[getMethod].min);
+                getMax.textContent = formatNumber(config.methodLimits[getMethod].max);
+            } else {
+                getMin.textContent = "0.00";
+                getMax.textContent = "0.00";
+            }
+        }
+
+        // التحقق من صحة المبلغ
+        function validateAmount(amount, method) {
+            if (!method || method === "Select Currency") return false;
+            const { min, max } = config.methodLimits[method] || { min: 0, max: Infinity };
+            return amount >= min && amount <= max && !isNaN(amount) && amount > 0;
+        }
+
+        // تحديث حقل التبادل
+        function updateExchange() {
+            const sendAmount = parseFloat(sendAmountInput.value) || 0;
+            const sendMethodCurrency = sendMethodCurrencySelect.value;
+            const getMethodCurrency = getMethodCurrencySelect.value;
+            const sendCurrency = getCurrencyFromMethod(sendMethodCurrency);
+            const getCurrency = getCurrencyFromMethod(getMethodCurrency);
+
+            updateLimits();
+            sendAmountError.style.display = 'none';
+
+            if (sendMethodCurrency !== "Select Currency" && config.methodLimits[sendMethodCurrency]) {
+                if (!validateAmount(sendAmount, sendMethodCurrency)) {
+                    sendAmountError.style.display = 'block';
+                    sendAmountInput.value = config.methodLimits[sendMethodCurrency].min.toFixed(2);
+                    getAmountInput.value = "0.00";
+                    transactionFees.textContent = formatNumber(0);
+                    finalAmount.textContent = formatNumber(0);
+                    exchangeRateText.textContent = translations[currentLang].selectCurrencies;
+                    return;
+                }
+            }
+
+            if (sendCurrency && getCurrency && sendCurrency === getCurrency) {
+                getAmountInput.value = sendAmount.toFixed(2);
+                transactionFees.textContent = formatNumber(0);
+                finalAmount.textContent = formatNumber(sendAmount);
+                exchangeRateText.textContent = `1 ${sendCurrency} = 1 ${getCurrency}`;
+            } else if (sendCurrency && getCurrency) {
+                const rate = exchangeRates[sendCurrency][getCurrency] || 1;
+                const getAmount = sendAmount * rate;
+                getAmountInput.value = getAmount.toFixed(2);
+                const fee = getAmount * 0.005;
+                const final = getAmount - fee;
+                transactionFees.textContent = formatNumber(fee.toFixed(2));
+                finalAmount.textContent = formatNumber(final.toFixed(2));
+                exchangeRateText.textContent = `1 ${sendCurrency} = ${formatNumber(rate.toFixed(2))} ${getCurrency}`;
+            } else {
+                getAmountInput.value = "0.00";
+                transactionFees.textContent = formatNumber(0);
+                finalAmount.textContent = formatNumber(0);
+                exchangeRateText.textContent = translations[currentLang].selectCurrencies;
+            }
+        }
+
+        // تبديل العملات
+        swapIcon.addEventListener('click', () => {
+            const tempMethod = sendMethodCurrencySelect.value;
+            sendMethodCurrencySelect.value = getMethodCurrencySelect.value;
+            getMethodCurrencySelect.value = tempMethod;
+            updateExchange();
+        });
+
+        // إرسال إشعار تيليجرام
+        async function sendTelegramNotification(message) {
+            try {
+                const url = `https://api.telegram.org/bot${config.TELEGRAM_BOT_TOKEN}/sendMessage`;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: config.CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+                if (!response.ok) throw new Error('Failed to send Telegram notification');
+            } catch (error) {
+                console.error('Telegram notification error:', error);
+                showToast('telegramNotificationError');
+            }
+        }
+
+        // معالجة إدخال المبلغ
+        sendAmountInput.addEventListener('input', () => {
+            let value = sendAmountInput.value.replace(/[^0-9.]/g, '');
+            const parts = value.split('.');
+            if (parts.length > 1) {
+                value = `${parts[0]}.${parts[1].slice(0, 2)}`;
+            }
+            sendAmountInput.value = value;
+            updateExchange();
+        });
+
+        // تحديث عند تغيير طرق الدفع
+        sendMethodCurrencySelect.addEventListener('change', updateExchange);
+        getMethodCurrencySelect.addEventListener('change', updateExchange);
+
+        // حفظ التفضيلات
+        saveFavoriteBtn.addEventListener('click', () => {
+            const sendMethod = sendMethodCurrencySelect.value;
+            const getMethod = getMethodCurrencySelect.value;
+            if (sendMethod !== "Select Currency" && getMethod !== "Select Currency") {
+                localStorage.setItem('savedSendMethod', sendMethod);
+                localStorage.setItem('savedGetMethod', getMethod);
+                showToast('contactSuccess', true);
+            } else {
+                showToast('selectCurrencyError');
+            }
+        });
+
+        // بدء عملية التبادل
+        exchangeNowBtn.addEventListener('click', () => {
+            const sendMethodCurrency = sendMethodCurrencySelect.value;
+            const getMethodCurrency = getMethodCurrencySelect.value;
+            const sendAmount = parseFloat(sendAmountInput.value) || 0;
+
+            if (sendMethodCurrency === "Select Currency" || getMethodCurrency === "Select Currency") {
+                showToast('selectCurrencyError');
+                return;
+            }
+
+            if (!validateAmount(sendAmount, sendMethodCurrency)) {
+                showToast('amountError');
+                return;
+            }
+
+            showSection(paymentSection);
+            const sendCurrency = getCurrencyFromMethod(sendMethodCurrency);
+            paymentSendAmount.textContent = `${formatNumber(sendAmount.toFixed(2))} ${sendCurrency}`;
+            paymentSendMethod.textContent = `${translations[currentLang].via || 'عبر'}: ${sendMethodCurrency}`;
+            paymentAccountNumber.textContent = config.dummyAccounts[sendMethodCurrency] || "الحساب غير متاح";
+            receiveMethod.textContent = `${translations[currentLang].receivingVia || 'الاستلام عبر'}: ${getMethodCurrency}`;
+        });
+
+        // التحقق من صحة الحساب
+        function validateAccount(account, method) {
+            if (!account) return false;
+            if (method.includes('Telegram')) {
+                return account.startsWith('@') && account.length > 2;
+            }
+            if (method.includes('USDT')) {
+                const walletRegex = /^(0x)?[0-9a-fA-F]{40}$|^[A-Za-z0-9]{32,}$/;
+                return walletRegex.test(account);
+            }
+            const accountRegex = /^[0-9a-zA-Z@._-]+$/;
+            return accountRegex.test(account) && account.length > 3;
+        }
+
+        // إرسال الدفع
+        submitPaymentBtn.addEventListener('click', async () => {
+            const receiveAccount = receiveAccountInput.value.trim();
+            const screenshotFile = paymentScreenshotInput.files[0];
+            const getMethodCurrency = getMethodCurrencySelect.value;
+            const sendMethodCurrency = sendMethodCurrencySelect.value;
+            const sendAmount = parseFloat(sendAmountInput.value) || 0;
+            const getAmount = parseFloat(getAmountInput.value) || 0;
+            let hasError = false;
+
+            receiveAccountError.style.display = 'none';
+            paymentScreenshotError.style.display = 'none';
+
+            if (!receiveAccount || !validateAccount(receiveAccount, getMethodCurrency)) {
+                receiveAccountError.style.display = 'block';
+                showToast('receiveAccountError');
+                hasError = true;
+            }
+
+            if (!screenshotFile) {
+                paymentScreenshotError.style.display = 'block';
+                showToast('uploadScreenshotError');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const sendCurrency = getCurrencyFromMethod(sendMethodCurrency);
+            const getCurrency = getCurrencyFromMethod(getMethodCurrency);
+            const notificationMessage = `
+*طلب تبادل جديد*
+- *الإرسال*: ${formatNumber(sendAmount.toFixed(2))} ${sendCurrency} عبر ${sendMethodCurrency}
+- *الاستلام*: ${formatNumber(getAmount.toFixed(2))} ${getCurrency} عبر ${getMethodCurrency}
+- *حساب الاستلام*: ${receiveAccount}
+- *لقطة الشاشة*: تم رفع صورة دفع
+- *رقم الحساب المرسل إليه*: ${config.dummyAccounts[sendMethodCurrency] || 'غير متاح'}
+- *الوقت*: ${new Date().toLocaleString()}
+            `;
+            await sendTelegramNotification(notificationMessage);
+
+            showSection(successSection);
+            setTimeout(() => {
+                showSection(exchangeSection);
+                sendAmountInput.value = "0.00";
+                getAmountInput.value = "0.00";
+                sendMethodCurrencySelect.value = "Select Currency";
+                getMethodCurrencySelect.value = "Select Currency";
+                receiveAccountInput.value = "";
+                paymentScreenshotInput.value = "";
+                updateExchange(); // تحديث واجهة التبادل بعد إعادة التعيين
+            }, 3000); // تأخير 3 ثوانٍ لإظهار رسالة النجاح
+        });
+
+        // تحسين التحقق من المدخلات في الوقت الحقيقي
+        receiveAccountInput.addEventListener('input', () => {
+            const receiveAccount = receiveAccountInput.value.trim();
+            const getMethodCurrency = getMethodCurrencySelect.value;
+            if (receiveAccount && validateAccount(receiveAccount, getMethodCurrency)) {
+                receiveAccountError.style.display = 'none';
+                receiveAccountInput.classList.remove('border-red-500');
+                receiveAccountInput.classList.add('border-green-500');
+            } else {
+                receiveAccountError.style.display = 'block';
+                receiveAccountInput.classList.add('border-red-500');
+                receiveAccountInput.classList.remove('border-green-500');
+            }
+        });
+
+        // التحقق من رفع لقطة الشاشة
+        paymentScreenshotInput.addEventListener('change', () => {
+            if (paymentScreenshotInput.files.length > 0) {
+                paymentScreenshotError.style.display = 'none';
+                paymentScreenshotInput.classList.remove('border-red-500');
+                paymentScreenshotInput.classList.add('border-green-500');
+            } else {
+                paymentScreenshotError.style.display = 'block';
+                paymentScreenshotInput.classList.add('border-red-500');
+                paymentScreenshotInput.classList.remove('border-green-500');
+            }
+        });
+
+        // تحديث الأسعار عند التنقل إلى قسم الأسعار
+        document.querySelector('.nav-link[href="#prices"]').addEventListener('click', () => {
+            updatePricesTable();
+        });
+
+        // إعداد الخريطة باستخدام Leaflet
+        function initMap() {
+            const map = L.map('map').setView([30.0444, 31.2357], 13); // القاهرة
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+            L.marker([30.0444, 31.2357]).addTo(map)
+                .bindPopup('CryptoSwift - القاهرة')
+                .openPopup();
+        }
+
+        // تنشيط الأسئلة الشائعة
+        function setupFAQ() {
+            document.querySelectorAll('.faq-item h3').forEach(item => {
+                item.addEventListener('click', () => {
+                    const faqItem = item.parentElement;
+                    faqItem.classList.toggle('active');
+                    document.querySelectorAll('.faq-item').forEach(other => {
+                        if (other !== faqItem) other.classList.remove('active');
+                    });
+                });
+            });
+        }
+
+        // التنقل السلس
+        function setupSmoothScroll() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        showSection(targetSection);
+                        window.scrollTo({
+                            top: targetSection.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // التحقق من صحة البريد الإلكتروني
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        // إرسال نموذج الاتصال
+        submitContact.addEventListener('click', async () => {
+            const name = contactName.value.trim();
+            const email = contactEmail.value.trim();
+            const message = contactMessage.value.trim();
+            let hasError = false;
+
+            if (!name || name.length < 2) {
+                contactName.classList.add('border-red-500');
+                showToast('amountError');
+                hasError = true;
+            } else {
+                contactName.classList.remove('border-red-500');
+            }
+
+            if (!email || !validateEmail(email)) {
+                contactEmail.classList.add('border-red-500');
+                showToast('invalidEmailError');
+                hasError = true;
+            } else {
+                contactEmail.classList.remove('border-red-500');
+            }
+
+            if (!message || message.length < 10) {
+                contactMessage.classList.add('border-red-500');
+                showToast('amountError');
+                hasError = true;
+            } else {
+                contactMessage.classList.remove('border-red-500');
+            }
+
+            if (hasError) return;
+
+            const notificationMessage = `
+*رسالة اتصال جديدة*
+- *الاسم*: ${name}
+- *البريد الإلكتروني*: ${email}
+- *الرسالة*: ${message}
+- *الوقت*: ${new Date().toLocaleString()}
+            `;
+            await sendTelegramNotification(notificationMessage);
+
+            showToast('contactSuccess', true);
+            contactName.value = '';
+            contactEmail.value = '';
+            contactMessage.value = '';
+        });
+
+        // العودة إلى قسم التبادل
+        backToExchangeBtn.addEventListener('click', () => {
+            showSection(exchangeSection);
+        });
+
+        // منع التمرير الزائد
+        document.addEventListener('wheel', (e) => {
+            if (window.scrollY === 0 && e.deltaY < 0) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        // تحسين تأثيرات الأختام
+        function setupTrustSeals() {
+            document.querySelectorAll('.trust-seal').forEach(seal => {
+                seal.addEventListener('click', () => {
+                    seal.style.transform = 'scale(1.1)';
+                    setTimeout(() => {
+                        seal.style.transform = 'scale(1)';
+                    }, 200);
+                });
+            });
+        }
+
+        // إعداد الصفحة عند التحميل
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLanguage();
+            loadPreferences();
+            initMap();
+            setupFAQ();
+            setupSmoothScroll();
+            setupTrustSeals();
+            updateExchange();
+        });
+
+        // معالجة الأخطاء العامة
+        window.addEventListener('error', (event) => {
+            console.error('General Error:', event.message, event.filename, event.lineno);
+            showToast('errorMessage');
+        });
+
+        // معالجة الأخطاء غير المعالجة
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Unhandled Promise Rejection:', event.reason);
+            showToast('errorMessage');
+        });
+
+        // إضافة وظيفة لتحديث الأختام ديناميكيًا
+        function updateTrustSeals() {
+            document.querySelectorAll('.trust-seal').forEach(seal => {
+                const href = seal.getAttribute('href');
+                if (href && href !== '#') {
+                    seal.setAttribute('target', '_blank');
+                    seal.setAttribute('rel', 'noopener noreferrer');
+                }
+            });
+        }
+
+        // استدعاء تحديث الأختام عند التحميل
+        updateTrustSeals();
+
+        // إضافة وظيفة للتحقق من اتصال الإنترنت
+        window.addEventListener('online', () => {
+            showToast('contactSuccess', true);
+            fetchExchangeRates();
+        });
+
+        window.addEventListener('offline', () => {
+            showToast('errorMessage');
+        });
+
+        // إضافة وظيفة لتسجيل الأحداث للتحليلات (محاكاة)
+        function logEvent(eventName, details) {
+            console.log(`Event: ${eventName}`, details);
+            // يمكن إضافة إرسال إلى خدمة تحليلات لاحقًا
+        }
+
+        // تسجيل الأحداث عند النقر على الأزرار المهمة
+        exchangeNowBtn.addEventListener('click', () => {
+            logEvent('Exchange_Initiated', {
+                sendMethod: sendMethodCurrencySelect.value,
+                getMethod: getMethodCurrencySelect.value,
+                amount: sendAmountInput.value
+            });
+        });
+
+        submitPaymentBtn.addEventListener('click', () => {
+            logEvent('Payment_Submitted', {
+                receiveAccount: receiveAccountInput.value,
+                screenshotUploaded: paymentScreenshotInput.files.length > 0
+            });
+        });
+
+        submitContact.addEventListener('click', () => {
+            logEvent('Contact_Form_Submitted', {
+                name: contactName.value,
+                email: contactEmail.value
+            });
+        });
+
+        // إضافة وظيفة لتحسين أداء التمرير
+        let lastScrollTop = 0;
+        window.addEventListener('scroll', () => {
+            const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScrollTop > lastScrollTop) {
+                document.querySelector('.navbar').style.top = '-80px';
+            } else {
+                document.querySelector('.navbar').style.top = '0';
+            }
+            lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+        }, { passive: true });
+
+        // إضافة دعم لتخزين الجلسة
+        function saveSession() {
+            const sessionData = {
+                sendMethod: sendMethodCurrencySelect.value,
+                getMethod: getMethodCurrencySelect.value,
+                sendAmount: sendAmountInput.value
+            };
+            sessionStorage.setItem('cryptoSwiftSession', JSON.stringify(sessionData));
+        }
+
+        function loadSession() {
+            const sessionData = JSON.parse(sessionStorage.getItem('cryptoSwiftSession'));
+            if (sessionData) {
+                sendMethodCurrencySelect.value = sessionData.sendMethod || "Select Currency";
+                getMethodCurrencySelect.value = sessionData.getMethod || "Select Currency";
+                sendAmountInput.value = sessionData.sendAmount || "0.00";
+                updateExchange();
+            }
+        }
+
+        // استدعاء تحميل الجلسة
+        loadSession();
+
+        // حفظ الجلسة عند التغييرات
+        sendMethodCurrencySelect.addEventListener('change', saveSession);
+        getMethodCurrencySelect.addEventListener('change', saveSession);
+        sendAmountInput.addEventListener('input', saveSession);
+
+        // إضافة دعم للتحقق من إصدار المتصفح
+        function checkBrowserCompatibility() {
+            const ua = navigator.userAgent;
+            if (/MSIE|Trident/.test(ua)) {
+                showToast('errorMessage');
+                console.warn('This browser is outdated and may not support all features.');
+            }
+        }
+
+        checkBrowserCompatibility();
+
+        // إضافة دعم لتحسين تجربة لوحة المفاتيح
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!exchangeSection.classList.contains('hidden')) {
+                    sendAmountInput.value = "0.00";
+                    getAmountInput.value = "0.00";
+                    sendMethodCurrencySelect.value = "Select Currency";
+                    getMethodCurrencySelect.value = "Select Currency";
+                    updateExchange();
+                }
+            }
+        });
+
+        // إضافة دعم لتحسين تجربة اللمس
+        document.querySelectorAll('.trust-seal').forEach(seal => {
+            seal.addEventListener('touchstart', () => {
+                seal.style.transform = 'scale(1.1)';
+            });
+            seal.addEventListener('touchend', () => {
+                seal.style.transform = 'scale(1)';
+            });
+        });
+
+        // إضافة وظيفة لتحديث وقت الصفحة
+        function updatePageTime() {
+            const footer = document.querySelector('.footer p:first-child');
+            footer.textContent = `© ${new Date().getFullYear()} CryptoSwift. جميع الحقوق محفوظة.`;
+        }
+
+        updatePageTime();
+        setInterval(updatePageTime, 60000); // تحديث كل دقيقة
+
+        // إضافة وظيفة للتحقق من توافق الشاشة
+        function checkScreenResolution() {
+            if (window.innerWidth < 320) {
+                showToast('errorMessage');
+                console.warn('Screen resolution is too low for optimal experience.');
+            }
+        }
+
+        checkScreenResolution();
+        window.addEventListener('resize', checkScreenResolution);
+
+    </script>
+</body>
+</html>
